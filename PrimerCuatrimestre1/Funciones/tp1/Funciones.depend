@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1741797713 source:c:\users\noxiepc\desktop\carpetas\facultad\nivelatorio\simulacroparcial\funciones\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+

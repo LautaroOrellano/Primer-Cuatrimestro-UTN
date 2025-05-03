@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1746069783 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre2\structs\tp1\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

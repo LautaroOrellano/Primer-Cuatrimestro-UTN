@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1740262701 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\funciones\tp2\pila.c
+	"pila.h"
+
+1740262702 c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\funciones\tp2\pila.h
+	<stdio.h>
+	<malloc.h>
+
+1742163756 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\funciones\tp2\main.c
+	<stdio.h>
+	<stdlib.h>
+	"pila.h"
+

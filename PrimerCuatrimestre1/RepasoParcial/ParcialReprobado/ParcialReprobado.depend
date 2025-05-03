@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1745593446 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\repasoparcial\parcialreprobado\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	"Pila.h"
+
+1740262701 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\repasoparcial\parcialreprobado\pila.c
+	"pila.h"
+
+1740262702 c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\repasoparcial\parcialreprobado\pila.h
+	<stdio.h>
+	<malloc.h>
+

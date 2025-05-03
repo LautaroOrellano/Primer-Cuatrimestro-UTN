@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1743991372 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\matricesystring\ejercicios.tp4\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+

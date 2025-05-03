@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1744504892 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\simulacroparcial\simulacro3parcial\simulacro3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"pila.h"
+	<string.h>
+
+1740262702 c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\simulacroparcial\simulacro3parcial\simulacro3\pila.h
+	<stdio.h>
+	<malloc.h>
+
+1740262701 source:c:\users\noxiepc\desktop\carpetas\facultad\primercuatrimestre\simulacroparcial\simulacro3parcial\simulacro3\pila.c
+	"pila.h"
+
