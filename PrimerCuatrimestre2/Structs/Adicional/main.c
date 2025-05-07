@@ -14,44 +14,47 @@ typedef struct{
     int stock;
     float precio;
     char nombre[DIMPAL];
-    char categoriaProducto[DIMPAL]
+    char categoria[DIMPAL]
 
-}stProducto;
+}stProductos;
 
 typedef struct{
 
     char categoria[DIMPAL];
-    stProducto producto[DIM];
+    stProductos productos[DIM];
     int productosDisponibles;
 
 }stCategorias;
 
 //Prototipado
 ///Ejercicio1
-int cargaProducto(stProducto productosSinCategorizar[DIMPROD]);
-void mostrarProductos(stProducto productosSinCategorizar[DIMPROD], int validos);
+stProductos cargarProducto();
+int cargarProductos(stProductos productosSinCategorizar[DIMPROD]);
+void mostrarProductos(stProductos productosSinCategorizar[DIMPROD], int validos);
 ///Ejercicio2
-int categoriasDisponibles(stProducto productosSinCategorizar[DIMPROD], int validos, stCategorias productosCategorizados[DIMCAT]);
-void mostrarCategorias(stCategorias productosCategorizados[DIMCAT], int contCategorias);
-
-
+int categoriasDisponibles(stCategorias categorias[DIMCAT], int validos, char nombreCategoria[DIMPAL]);
+void mostrarCategorias(stCategorias categorias[DIMCAT], int cantCategorias);
+int cargaCategoria(stCategorias categorias[DIMCAT], int validos, stProductos productosSinCategorizar[DIMPROD]);
+///Ejercicio3
+int buscarCategoriaPorNomrbe(stCategorias productosCategorizados[DIMCAT], int contCategorias, char nombreCategoria[DIM]);
+void guardarProductoConCategoria(stProductos productosSinCategorizar[DIMPROD], int validos, int contCategorias, stCategorias productosCategorizados[DIMCAT], char nombreCategoria[DIM]);
 
 int main()
 {
     ///Ejercicio1
     int validos = 0;
-    stProducto productosSinCategorizar[DIMPROD];
-    validos = cargaProducto(productosSinCategorizar);
+    stProductos productosSinCategorizar[DIMPROD];
+    validos = cargarProductos(productosSinCategorizar);
     mostrarProductos(productosSinCategorizar, validos);
 
     ///Ejercicio2
-    int contCategorias = 0;
-    stCategorias productosCategorizados[DIMCAT];
-    contCategorias = categoriasDisponibles(productosSinCategorizar, validos, productosCategorizados);
-    mostrarCategorias(productosCategorizados, contCategorias);
+    stCategorias categorias[DIMCAT];
+    char nombreCategoria[DIMPAL];
+    int cantCategorias = 0;
+    cantCategorias = cargaCategoria(categorias, validos, productosSinCategorizar);
+    mostrarCategorias(categorias, cantCategorias);
 
     ///Ejercicio3
-
 
 
 
@@ -60,87 +63,109 @@ int main()
 
 
 ///Ejercicio1
-int cargaProducto(stProducto productosSinCategorizar[DIMPROD]){
+stProductos cargarProducto(){
+
+    stProductos nuevoProducto;
+    static int idAutoIncremental = 1;
+
+    nuevoProducto.idProducto = idAutoIncremental;
+    idAutoIncremental++;
+
+    printf("Ingrese el stock del producto: ");
+    fflush(stdin);
+    scanf("%d", &nuevoProducto.stock);
+    printf("\n");
+
+    printf("Ingrese el precio del producto: ");
+    fflush(stdin);
+    scanf("%f", &nuevoProducto.precio);
+    printf("\n");
+
+    printf("Ingrese el nombre del producto: ");
+    getchar();
+    fgets(nuevoProducto.nombre, 20, stdin);
+    printf("\n");
+
+    printf("Ingrese el nombre de la categoria: ");
+    fgets(nuevoProducto.categoria, 20, stdin);
+    printf("\n");
+
+    return nuevoProducto;
+}
+int cargarProductos(stProductos productosSinCategorizar[DIMPROD]){
 
     int i = 0;
     char opcion = 's';
 
-    while( opcion == 's' && i<DIMPROD){
-
-        productosSinCategorizar[i].idProducto = i+1;
-
-        printf("Stock del producto %d: ", i+1);
-        fflush(stdin);
-        scanf("%d", &productosSinCategorizar[i].stock);
-        printf("\n");
-
-        printf("Precio del producto %d: ", i+1);
-        fflush(stdin);
-        scanf("%f", &productosSinCategorizar[i].precio);
-        printf("\n");
-
-        printf("Nombre del producto %d: ", i+1);
-        getchar();
-        fgets(productosSinCategorizar[i].nombre, 20, stdin);
-        printf("\n");
-
-        printf("Nombre de la categoria %d: ", i+1);
-        fgets(productosSinCategorizar[i].categoriaProducto, 20, stdin);
-        printf("\n");
-
-        printf("Desea cargar otro producto? (s o n): ");
-        scanf("%c", &opcion);
-        printf("\n");
-
+    while(opcion == 's' && i < DIMPROD){
+        productosSinCategorizar[i] = cargarProducto();
         i++;
+
+        printf("Ingrese s para continuear o cualquier tecla para salir: ");
+        scanf(" %c", &opcion);
+        printf("\n");
     }
+
     return i;
 }
-void mostrarProductos(stProducto productosSinCategorizar[DIMPROD], int validos){
+void mostrarProductos(stProductos productosSinCategorizar[DIMPROD], int validos){
 
     for(int i=0; i<validos; i++){
 
         printf("____________________\n");
         printf("Id producto: %d\n", productosSinCategorizar[i].idProducto);
         printf("Stock: %d\n", productosSinCategorizar[i].stock);
-        printf("Precio: %.02f SD \n", productosSinCategorizar[i].precio);
+        printf("Precio: %.02f USD \n", productosSinCategorizar[i].precio);
         printf("Nombre: %s", productosSinCategorizar[i].nombre);
-        printf("Categoria: %s", productosSinCategorizar[i].categoriaProducto);
+        printf("Categoria: %s", productosSinCategorizar[i].categoria);
         printf("____________________\n");
     }
 }
+///Ejercicio2
+int categoriasDisponibles(stCategorias categorias[DIMCAT], int validos, char nombreCategoria[DIMPAL]){
 
-int categoriasDisponibles(stProducto productosSinCategorizar[DIMPROD], int validos, stCategorias productosCategorizados[DIMCAT]){
+    int encontrado = -1;
+    int i = 0;
+    while(i<validos && encontrado == -1){
+        if(strcmpi(categorias[i].categoria, nombreCategoria) == 0){
+            encontrado = i;
+        }
+        i++;
 
-    char categoria[20];
-    int cont=0;
-    int flag;
-
+    }
+    return encontrado;
+}
+int cargaCategoria(stCategorias categorias[DIMCAT], int validos, stProductos productosSinCategorizar[DIMPROD]){
+    int cantCategorias = 0;
     for(int i=0; i<validos; i++){
-        strcpy(categoria, productosSinCategorizar[i].categoriaProducto);
-        flag = 0;
 
-        for(int j=0; j<cont; j++){
-            if(strcmp(productosCategorizados[j].categoria, categoria)==0){
-            flag = 1;
-            break;
-            }
-        }
-
-        if(!flag){
-            strcpy(productosCategorizados[i].categoria, categoria);
-            cont++;
+        if(categoriasDisponibles(categorias,cantCategorias,productosSinCategorizar[i].categoria) == -1){
+            strcpy(categorias[cantCategorias].categoria, productosSinCategorizar[i].categoria);
+            categorias[cantCategorias].productosDisponibles = 0;
+            cantCategorias ++;
         }
     }
-    return cont;
+    return cantCategorias;
 }
+void mostrarCategorias(stCategorias categorias[DIMCAT], int cantCategorias){
 
-void mostrarCategorias(stCategorias productosCategorizados[DIMCAT], int contCategorias){
-
-    for(int i=0; i<contCategorias; i++){
+    for(int i=0; i<cantCategorias; i++){
         printf("\n");
-        printf("Categoria %d %s ", i+1, productosCategorizados[i].categoria);
+        printf("Categorias dispobibles: \n");
+        printf("Categoria %d %s ", i+1, categorias[i].categoria);
     }
 }
+///Ejercicio3
+void cargarProductosEnCategorias(stCategorias categorias[DIMCAT], int cantCategorias, stProductos productosSinCategorizar[DIMPROD], int validos){
+
+    int indiceCategoria = -1;
+    for(int i=0; i<validos; i++){
+        indiceCategoria = categoriasDisponibles(categorias,validos,productosSinCategorizar[i].categoria);
+        int validosProdxCat = categorias[indiceCategoria].productosDisponibles;
+        categorias[indiceCategoria].productos[validosProdxCat] = productosSinCategorizar[i];
+        categorias[indiceCategoria].productosDisponibles++;
+    }
+}
+
 
 
