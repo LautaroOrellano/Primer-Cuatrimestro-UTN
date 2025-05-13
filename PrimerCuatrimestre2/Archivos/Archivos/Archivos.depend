@@ -1,6 +1,14 @@
 # depslib dependency file v1.0
-1746945857 source:c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\archivos\archivos\main.c
+1747108097 source:c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\archivos\archivos\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+	"pila.h"
+
+1740262701 source:c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\archivos\archivos\pila.c
+	"pila.h"
+
+1740262702 c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\archivos\archivos\pila.h
+	<stdio.h>
+	<malloc.h>
 

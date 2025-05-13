@@ -29,8 +29,16 @@ void mostrarRegistroArchivo(char nombreArchivo1[]);
 ///Ejercicio6
 void agregarNuevoDatos(char nombreArchivo1[]);
 ///Ejercicio7
-
-
+void pasarApilaLegajos(char nombreArchivo1[], Pila *mayores);
+///Ejercicio8
+int cantidadAlumnosMayoresA(char nombreArchivo1[], int edadUsuario);
+///Ejercicio9
+void mostrarNombreXedades(char nombreArchivo1[], int edadRango1, int edadRango2);
+///Ejericio10
+void mostrarAlumnoMayorEdad(char nombreArchivo1[]);
+void mostrarUnAlumno(stAlumno aux);
+///Ejercicio11
+int anioDeCursada(char nombreArchivo1[], int anioCursada);
 
 
 int main()
@@ -63,11 +71,46 @@ int main()
     mostrarRegistroArchivo(nombreArchivo1);
 
     ///Ejercicio7
-    Pila legajos;
-    inicpila(&legajos);
+    Pila mayores;
+    inicpila(&mayores);
+    pasarApilaLegajos(nombreArchivo1, &mayores);
+    mostrar(&mayores);
+
+    ///Ejercicio8
+    int edadUsuario;
+    int totalAlumMayores;
+    getchar();
+    printf("Alumnos mayores a que edad desea buscar?: ");
+    scanf("%d", &edadUsuario);
+    totalAlumMayores = cantidadAlumnosMayoresA(nombreArchivo1, edadUsuario);
+    printf("\n");
+    printf("La cantidad de alumnos mayores a %d, es de %d\n", edadUsuario, totalAlumMayores);
 
 
+    ///Ejercicio9
+    int edadRango1, edadRango2;
+    printf("Edad del primer rango a buscar\n");
+    fflush(stdin);
+    scanf("%d", &edadRango1);
+    printf("\n");
+    printf("Edad del segundo rango a buscar\n");
+    fflush(stdin);
+    scanf("%d", &edadRango2);
+    mostrarNombreXedades(nombreArchivo1, edadRango1, edadRango2);
 
+    ///Ejercicio10
+    mostrarAlumnoMayorEdad(nombreArchivo1);
+
+    ///Ejercicio11
+    int anioCursada;
+    int totalAlumnosXanioCursada;
+    printf("Alumnos con cuantos años de cursada desea buscar?");
+    fflush(stdin);
+    scanf("%d", &anioCursada);
+    totalAlumnosXanioCursada = anioDeCursada(nombreArchivo1, anioCursada);
+    printf("Los Alumnos con %d años de cursa son: %d", anioCursada, totalAlumnosXanioCursada);
+
+    ///Ejercicio12
 
     return 0;
 }
@@ -154,7 +197,7 @@ stAlumno cargarUnAlumno(){
     scanf("%d", &newAlumno.edad);
     while ((getchar()) != '\n');
 
-    printf("Ingrese el año de cursada: ");
+    printf("Años cursados: ");
     scanf("%d", &newAlumno.anio);
     while ((getchar()) != '\n');
 
@@ -231,7 +274,8 @@ void cargarArchivoAlumno(char nombreArchivo1[]){
             printf("No se puede crear el archivo.\n");
         }
     } else {
-        printf("El elemento ya existia, no se cargo.\n");
+        printf("El elemento ya existe. \n");
+        printf("\n");
     }
     fclose(archi);
 }
@@ -264,30 +308,41 @@ void agregarNuevoDatos(char nombreArchivo1[]){
 
     FILE* arch = fopen(nombreArchivo1, "ab");
     stAlumno aux;
+    char opcion = 's';
 
     if(arch != NULL){
 
-        printf("Ingrese el num de legajo: ");
-        scanf("%d", &aux.legajo);
-        while ((getchar()) != '\n');
+        printf("Desea cargar un alumno nuevo (s-n)?: ");
+        scanf("%c", &opcion);
 
-        printf("Ingrese el nombre y apellido: ");
-        fgets(aux.nombreYapellido, sizeof(aux.nombreYapellido), stdin);
+        printf("\n");
+        while(opcion == 's'){
 
-        size_t len = strlen(aux.nombreYapellido);
-        if (len > 0 && aux.nombreYapellido[len - 1] == '\n') {
-        aux.nombreYapellido[len - 1] = '\0';
+            printf("Ingrese el num de legajo: ");
+            scanf("%d", &aux.legajo);
+            while ((getchar()) != '\n');
+
+            printf("Ingrese el nombre y apellido: ");
+            fgets(aux.nombreYapellido, sizeof(aux.nombreYapellido), stdin);
+
+            size_t len = strlen(aux.nombreYapellido);
+            if (len > 0 && aux.nombreYapellido[len - 1] == '\n') {
+            aux.nombreYapellido[len - 1] = '\0';
+            }
+
+            printf("Ingrese la edad: ");
+            scanf("%d", &aux.edad);
+            while ((getchar()) != '\n');
+
+            printf("Años cursados: ");
+            scanf("%d", &aux.anio);
+            while ((getchar()) != '\n');
+
+            fwrite(&aux, sizeof(stAlumno), 1, arch);
+
+            printf("Desea cargar otro alumno (s-n)?");
+            scanf("%c", &opcion);
         }
-
-        printf("Ingrese la edad: ");
-        scanf("%d", &aux.edad);
-        while ((getchar()) != '\n');
-
-        printf("Ingrese el año de cursada: ");
-        scanf("%d", &aux.anio);
-        while ((getchar()) != '\n');
-
-        fwrite(&aux, sizeof(stAlumno), 1, arch);
 
     } else {
         printf("Error al cargar el archivo");
@@ -296,17 +351,139 @@ void agregarNuevoDatos(char nombreArchivo1[]){
 }
 
 ///Ejercicio7
-void pasarApilaLegajos(char nombreArchivo[], Pila *legajos){
+void pasarApilaLegajos(char nombreArchivo1[], Pila *mayores){
 
-    FILE* arch = fopen(nombreArchivo, "rb");
-
+    FILE* arch = fopen(nombreArchivo1, "rb");
     stAlumno aux;
 
     if(arch != NULL){
 
-        fread(&)
+        while(fread(&aux, sizeof(stAlumno),1,arch) > 0){
+            if(aux.edad > 18){
+                apilar(mayores, aux.edad);
+            }
+        }
 
+    } else {
+        printf("Error al leer el archivo...\n");
     }
-
 }
 
+///Ejercicio8
+int cantidadAlumnosMayoresA(char nombreArchivo1[], int edadUsuario){
+
+    FILE *arch = fopen(nombreArchivo1, "rb");
+    stAlumno aux;
+    int cont = 0;
+
+    if(arch != NULL){
+
+        while(fread(&aux,sizeof(stAlumno),1,arch) > 0){
+            if(aux.edad >= edadUsuario){
+                cont++;
+            }
+        }
+    } else {
+        printf("El archivo esta corrupto o no se pudo leer \n");
+    }
+    fclose(arch);
+    return cont;
+}
+
+///Ejercicio9
+void mostrarNombreXedades(char nombreArchivo1[], int edadRango1, int edadRango2){
+
+    FILE *arch = fopen(nombreArchivo1, "rb");
+    stAlumno aux;
+
+    if(arch != NULL){
+
+        printf("Los alumnos en ese rango son: \n");
+        while(fread(&aux, sizeof(stAlumno), 1, arch) > 0){
+                if((aux.edad >= edadRango1 && aux.edad <= edadRango2) || (aux.edad <= edadRango1 && aux.edad >= edadRango2)){
+                    printf("%s\n", aux.nombreYapellido);
+                }
+
+        }
+    } else {
+        printf("El arhivo esta corrupto o no se pudo leer.");
+    }
+    fclose(arch);
+}
+
+///Ejercicio10
+void mostrarAlumnoMayorEdad(char nombreArchivo1[]){
+
+    FILE *arch = fopen(nombreArchivo1, "rb");
+    stAlumno aux;
+
+    if(arch != NULL){
+
+        while(fread(&aux, sizeof(stAlumno), 1, arch) > 0){
+            int edadMayor = aux.edad;
+            if(aux.edad > edadMayor){
+                edadMayor = aux.edad;
+            }
+        }
+        printf("\n");
+        printf("El alumno con mayor edad es: \n");
+        mostrarUnAlumno(aux);
+    } else {
+        printf("Archivo corrupto o imposible de leer.");
+
+    }
+    fclose(arch);
+}
+
+void mostrarUnAlumno(stAlumno aux){
+
+    printf("-----------------------\n");
+    printf("Legajo: %d\n", aux.legajo);
+    printf("Nombre y Apellido: %s \n", aux.nombreYapellido);
+    printf("edad: %d\n", aux.edad);
+    printf("Año lectivo: %d\n", aux.anio);
+    printf("-----------------------\n");
+}
+
+///Ejercicio11
+int anioDeCursada(char nombreArchivo1[], int anioCursada){
+
+    FILE *arch = fopen(nombreArchivo1, "rb");
+    stAlumno aux;
+    int cont = 0;
+
+    if(arch != NULL){
+
+        while(fread(&aux, sizeof(stAlumno), 1, arch) > 0){
+
+            if(aux.anio == anioCursada){
+                cont++;
+            }
+        }
+    } else {
+        printf("Archivo corrupto o imposible de leer.");
+    }
+    fclose(arch);
+    return cont;
+}
+
+///Ejercicio12
+void copiaDeArchivo(char nombreArchivo2[], char nombreArchivo1[]){
+
+    FILE *arch = fopen(nombreArchivo1, "rb");
+    FILE *arch1 = fopen(nombreArchivo2, "wb");
+    stAlumno aux;
+
+    if(arch != NULL && arch1 != NULL){
+        while(fread(&aux, sizeof(stAlumno), 1, arch) > 0 ){
+            fwrite(&aux, sizeof(stAlumno), 1, arch1);
+        }
+        printf("Archivo copiado con exito!");
+    } else {
+        printf("El archivo esta corrupto o imposible leer.");
+    }
+    fclose(arch1);
+    fclose(arch);
+}
+
+void
