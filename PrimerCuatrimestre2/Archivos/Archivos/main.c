@@ -111,6 +111,7 @@ int main()
     printf("Los Alumnos con %d años de cursa son: %d", anioCursada, totalAlumnosXanioCursada);
 
     ///Ejercicio12
+    stAlumno vectorAlumnos[DIM];
 
     return 0;
 }
@@ -468,22 +469,8 @@ int anioDeCursada(char nombreArchivo1[], int anioCursada){
 }
 
 ///Ejercicio12
-void copiaDeArchivo(char nombreArchivo2[], char nombreArchivo1[]){
+void copiaDeArchivo(char nombreArchivo1[], stAlumno vectorAlumnos[DIM]){
 
     FILE *arch = fopen(nombreArchivo1, "rb");
-    FILE *arch1 = fopen(nombreArchivo2, "wb");
-    stAlumno aux;
 
-    if(arch != NULL && arch1 != NULL){
-        while(fread(&aux, sizeof(stAlumno), 1, arch) > 0 ){
-            fwrite(&aux, sizeof(stAlumno), 1, arch1);
-        }
-        printf("Archivo copiado con exito!");
-    } else {
-        printf("El archivo esta corrupto o imposible leer.");
-    }
-    fclose(arch1);
-    fclose(arch);
 }
-
-void
