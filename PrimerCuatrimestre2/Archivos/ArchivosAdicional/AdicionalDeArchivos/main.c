@@ -28,9 +28,9 @@ void guardarPeliculaAarchivo(char nombreArchivo[], int *idAutoIncremental);
 int existePelicula(char nombreArchivo[], stPelicula newPelicula);
 void mostrarRegistros(char nombreArchivo[]);
 void eliminaPelicula(char nombreArchivo[]);
-void mostrarUnregistro(char nombreArchivo[], int idMostrar);
+void mostrarPelicula(stPelicula aux);
 void modificarPelicula(char nombreArchivo[]);
-
+void consultarPelicula(char nombreArchivo[]);
 
 
 
@@ -38,9 +38,9 @@ int main()
 {
     char nombreArchivo[] = "Peliculas.bin";
     int opcion;
-    int salirMenu = 0;
+    int salirMenu = 1;
 
-    while(salirMenu == 0) {
+    while(salirMenu == 1) {
 
         printf("Menu de Peliculas: \n");
         printf("\n");
@@ -76,7 +76,7 @@ int main()
                 break;
 
             case 5:
-                //consultarPelicula(nombreArchivo);
+                consultarPelicula(nombreArchivo);
                 break;
 
             case 6:
@@ -92,7 +92,7 @@ int main()
                 break;
         }
         printf("\n");
-        printf("Desea salir del menu (1 para salir 0 para continuar)? \n");
+        printf("Desea salir del menu (0 para salir 1 para continuar)? \n");
         scanf("%d", &salirMenu);
         while(getchar() != '\n');
         printf("\n");
@@ -187,7 +187,7 @@ void guardarPelicula(stPelicula newPelicula, char nombreArchivo[], FILE *arch){
 
 void guardarPeliculaAarchivo(char nombreArchivo[], int *idAutoIncremental){
 
-    FILE *archi = fopen(nombreArchivo, "wb");
+    FILE *archi = fopen(nombreArchivo, "ab");
     int opcion = 's';
 
     if(archi != NULL){
@@ -225,7 +225,7 @@ void mostrarRegistros(char nombreArchivo[]){
             printf("Pais de origen: %s\n", aux.pais);
             printf("Año de estreno: %d\n", aux.anio);
             printf("Valoracion: %d\n", aux.valoracion);
-            printf("Pm: %d\n", aux.pm);
+            printf("Pm: +%d \n", aux.pm);
             printf("Eliminado: %d\n", aux.eliminado);
             printf("--------------------------\n");
 
@@ -238,18 +238,8 @@ void mostrarRegistros(char nombreArchivo[]){
 
 }
 
-void mostrarUnregistro(char nombreArchivo[], int idMostrar){
+void mostrarPelicula(stPelicula aux){
 
-    FILE *arch = fopen(nombreArchivo, "rb");
-    stPelicula aux;
-
-    if(arch != NULL){
-
-        fseek(arch, sizeof(stPelicula)*(idMostrar-1), SEEK_SET);
-
-        if(fread(&aux, sizeof(stPelicula), 1, arch) > 0){
-
-            printf("El registro a modificar es \n");
             printf("--------------------------\n");
             printf("ID: %d\n", aux.idPelicula);
             printf("Nombre de la pelicula: %s\n", aux.nombrePelicula);
@@ -262,12 +252,6 @@ void mostrarUnregistro(char nombreArchivo[], int idMostrar){
             printf("Eliminado: %d\n", aux.eliminado);
             printf("--------------------------\n");
 
-        }
-
-    } else {
-        printf("El archivo no se pudo leer. \n");
-    }
-    fclose(arch);
 }
 
 void eliminaPelicula(char nombreArchivo[]){
@@ -323,17 +307,7 @@ void modificarPelicula(char nombreArchivo[]){
             if(aux.idPelicula == idAModificar && aux.eliminado == 0){
                 encontrado = 1;
 
-                printf("--------------------------\n");
-                printf("ID: %d\n", aux.idPelicula);
-                printf("Nombre de la pelicula: %s\n", aux.nombrePelicula);
-                printf("Nombre del director: %s\n", aux.director);
-                printf("Genero: %s\n", aux.genero);
-                printf("Pais de origen: %s\n", aux.pais);
-                printf("Año de estreno: %d\n", aux.anio);
-                printf("Valoracion: %d\n", aux.valoracion);
-                printf("Pm: %d\n", aux.pm);
-                printf("Eliminado: %d\n", aux.eliminado);
-                printf("--------------------------\n");
+                mostrarPelicula(aux);
 
                 printf("Ingre el numero del campo a modificar? \n");
                 printf("\n");
@@ -399,13 +373,13 @@ void modificarPelicula(char nombreArchivo[]){
                 } else {
                     printf("Opcion invalida.");
                 }
+
+                fseek(arch, -sizeof(stPelicula), SEEK_CUR);
+                fwrite(&aux, sizeof(stPelicula), 1, arch);
+
+                printf("Registro modificado con exito. \n");
+                break;
             }
-
-            fseek(arch, -sizeof(stPelicula), SEEK_CUR);
-            fwrite(&aux, sizeof(stPelicula), 1, arch);
-
-            printf("Registro modificado con exito. \n");
-            break;
         }
 
         if(!encontrado){
@@ -417,6 +391,171 @@ void modificarPelicula(char nombreArchivo[]){
     } else {
         printf("Error al abrir el archivo. \n");
     }
+}
 
+void consultarPelicula(char nombreArchivo[]){
+
+    FILE *arch = fopen(nombreArchivo, "rb");
+    stPelicula aux;
+    int opcion, numeroAbuscar;
+    int flag = 0;
+    char nombreABuscar[DIM];
+
+    if(arch != NULL){
+
+                printf("Por que tipo desea consultar? \n");
+                printf("\n");
+                printf("1-nombre de la pelicula \n");
+                printf("2-nombre del director \n");
+                printf("3-Genero \n");
+                printf("4-Pais de origen \n");
+                printf("5-Año de estreno \n");
+                printf("6-Valoracion \n");
+                printf("7-Pm \n");
+                scanf("%d", &opcion);
+                while (getchar() != '\n');
+
+                switch(opcion){
+
+                    case 1:
+
+                        printf("Ingrese el nombre de la pelicula a buscar \n");
+                        fgets(nombreABuscar, 30, stdin);
+                        limpiarString(nombreABuscar);
+
+                        if(flag == 0){}
+                        while(fread(&aux, sizeof(stPelicula), 1, arch) > 0){
+                            if(strcmp(aux.nombrePelicula, nombreABuscar) == 0){
+                                mostrarPelicula(aux);
+                                flag = 1;
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con ese nombre.");
+                        }
+                        break;
+
+                    case 2:
+
+                        printf("Ingrese el nombre del director a buscar \n");
+                        fgets(nombreABuscar, 30, stdin);
+                        limpiarString(nombreABuscar);
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(strcmp(aux.director, nombreABuscar) == 0){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con ese director.");
+                        }
+                        break;
+
+                    case 3:
+
+                        printf("Ingrese el genero a buscar \n");
+                        fgets(nombreABuscar, 30, stdin);
+                        limpiarString(nombreABuscar);
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(strcmp(aux.genero, nombreABuscar) == 0){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con ese genero.");
+                        }
+
+                    case 4:
+
+                        printf("Ingrese el pais a buscar \n");
+                        fgets(nombreABuscar, 30, stdin);
+                        limpiarString(nombreABuscar);
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(strcmp(aux.pais, nombreABuscar) == 0){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con ese pais.");
+                        }
+
+                    case 5:
+
+                        printf("Ingrese el año de estreno a buscar \n");
+                        scanf("%d", &numeroAbuscar);
+
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(aux.anio == numeroAbuscar){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con ese año de estreno.");
+                        }
+
+                    case 6:
+
+                        printf("Ingrese la valoracion a buscar \n");
+                        scanf("%d", &numeroAbuscar);
+
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(aux.valoracion == numeroAbuscar){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro una pelicula con esa valoracion.");
+                        }
+
+                    case 7:
+
+                        printf("Ingrese el pm a buscar \n");
+                        scanf("%d", &numeroAbuscar);
+
+
+                        if(flag == 0){
+                            while(fread(&aux, sizeof(stPelicula), 1, arch) >0 ){
+                                if(aux.pm == numeroAbuscar){
+                                    mostrarPelicula(aux);
+                                    flag = 1;
+                                }
+                            }
+                        }
+                        if(!flag){
+                            printf("No se encontro un pm con ese valor.");
+                        }
+
+                    default:
+                        printf("Opcion no valida");
+                        break;
+                }
+
+    } else {
+        printf("El archivo no se pudo abrir.");
+    }
+
+    fclose(arch);
+}
+
+void listadosPor(){
 
 }
