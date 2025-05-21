@@ -31,13 +31,15 @@ void eliminaPelicula(char nombreArchivo[]);
 void mostrarPelicula(stPelicula aux);
 void modificarPelicula(char nombreArchivo[]);
 void consultarPelicula(char nombreArchivo[]);
-
-
+void ordenarPeliculaXSeleccion(stPelicula vectorPeliculas[], int validos);
+void listadosPorNombrePelicula(char nombreArchivo[]);
+void ordenarPeliculaXInserccion(stPelicula vectorPeliculas[], int validos);
+void listadosPorGeneroPelicula(char nombreArchivo[]);
 
 int main()
 {
     char nombreArchivo[] = "Peliculas.bin";
-    int opcion;
+    int opcion, validos;
     int salirMenu = 1;
 
     while(salirMenu == 1) {
@@ -80,11 +82,11 @@ int main()
                 break;
 
             case 6:
-                //listadoPeliculasXtitulo(nombreArchivo);
+                listadosPorNombrePelicula(nombreArchivo);
                 break;
 
             case 7:
-                //listadoPeliculasXtitulo(nombreArchivo);
+                listadosPorGeneroPelicula(nombreArchivo);
                 break;
 
             default:
@@ -97,9 +99,6 @@ int main()
         while(getchar() != '\n');
         printf("\n");
     }
-
-
-
 
     return 0;
 }
@@ -204,7 +203,6 @@ void guardarPeliculaAarchivo(char nombreArchivo[], int *idAutoIncremental){
     } else {
         printf("Error al abrir archivo.");
     }
-
     fclose(archi);
 }
 
@@ -556,6 +554,100 @@ void consultarPelicula(char nombreArchivo[]){
     fclose(arch);
 }
 
-void listadosPor(){
+void ordenarPeliculaXSeleccion(stPelicula vectorPeliculas[], int validos){
 
+    int i, j, min;
+    stPelicula aux;
+
+    for(i=0; i<validos-1; i++){
+        min = i;
+        for(j=i+1; j<validos; j++){
+            if(strcmpi(vectorPeliculas[j].nombrePelicula, vectorPeliculas[min].nombrePelicula) < 0 ){
+                min = j;
+            }
+        }
+
+        if(i!= min){
+            aux = vectorPeliculas[i];
+            vectorPeliculas[i] = vectorPeliculas[min];
+            vectorPeliculas[min] = aux;
+        }
+    }
+}
+
+void listadosPorNombrePelicula(char nombreArchivo[]){
+
+    FILE *arch = fopen(nombreArchivo, "rb");
+    stPelicula vectorPeliculas[DIM];
+    int validos = 0;
+
+    if(arch != NULL){
+        stPelicula aux;
+
+        while(fread(&aux, sizeof(stPelicula), 1, arch) > 0){
+            if(aux.eliminado == 0){
+                vectorPeliculas[validos] = aux;
+                validos++;
+            }
+        }
+
+        fclose(arch);
+
+        ordenarPeliculaXSeleccion(vectorPeliculas, validos);
+
+        for(int i=0; i<validos; i++){
+            mostrarPelicula(vectorPeliculas[i]);
+        }
+
+    } else {
+        printf("Error al cargar el archivo");
+    }
+}
+
+void ordenarPeliculaXInserccion(stPelicula vectorPeliculas[], int validos){
+
+    int i, j;
+    stPelicula aux;
+
+    for(i=1; i<validos; i++){
+        aux = vectorPeliculas[i];
+        j = i - 1;
+
+        while(j >= 0 && strcmpi(aux.genero, vectorPeliculas[j].genero) < 0){
+
+            vectorPeliculas[j+1] = vectorPeliculas[j];
+            j--;
+        }
+
+        vectorPeliculas[j+1] = aux;
+    }
+}
+
+void listadosPorGeneroPelicula(char nombreArchivo[]){
+
+    FILE *arch = fopen(nombreArchivo, "rb");
+    stPelicula vectorPeliculas[DIM];
+    int validos = 0;
+
+    if(arch != NULL){
+        stPelicula aux;
+
+        while(fread(&aux, sizeof(stPelicula), 1, arch) > 0){
+            if(aux.eliminado == 0){
+                vectorPeliculas[validos] = aux;
+                validos++;
+            }
+        }
+
+        fclose(arch);
+
+        ordenarPeliculaXInserccion(vectorPeliculas, validos);
+
+        for(int i=0; i<validos; i++){
+            mostrarPelicula(vectorPeliculas[i]);
+        }
+
+    } else {
+        printf("Error al cargar el archivo");
+    }
 }
