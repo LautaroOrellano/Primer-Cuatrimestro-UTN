@@ -30,7 +30,8 @@ void limpiarString(char string[]);
 
 int main()
 {
-
+    char archivoLibros = "libros.bin";
+    char archivoUsuarios = "usuarios.bin";
 
 
     return 0;
@@ -54,7 +55,6 @@ stLibro cargarUnLibro(){
     newLibro.idLibro = idAutoIncremental;
     idAutoIncremental ++;
 
-
     printf("Titulo del libro a cargar");
     fgets(newLibro.titulo, DIMPALABRA, stdin);
     limpiarString(newLibro.titulo);
@@ -63,10 +63,27 @@ stLibro cargarUnLibro(){
     fgets(newLibro.autor, DIMPALABRA, stdin);
     limpiarString(newLibro.autor);
 
-
-
+    return newLibro;
 }
 
+stUsuario cargarUnUsuario(){
+
+    stUsuario newUsuario;
+
+    static int idAutoIncremental = 1;
+    newUsuario.idUsuario = idAutoIncremental;
+    idAutoIncremental ++;
+
+    printf("Nombre del usuario a cargar");
+    fgets(newUsuario.nombre, DIMPALABRA, stdin);
+    limpiarString(newUsuario.nombre);
+
+    newUsuario.prestamosActivos = 0;
+
+    return newUsuario;
+}
+
+void guardarLibroArchivo()
 
 
 
