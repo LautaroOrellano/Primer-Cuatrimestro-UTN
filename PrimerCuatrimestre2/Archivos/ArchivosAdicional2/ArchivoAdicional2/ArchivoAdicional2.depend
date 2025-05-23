@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1748023293 source:c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\archivos\archivosadicional\archivoadicional2\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
