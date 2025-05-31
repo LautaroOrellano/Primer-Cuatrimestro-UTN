@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1748649557 source:c:\users\lautaro\documents\archivosgit\primer-cuatrimestro-utn\primercuatrimestre2\recursividad\recursividad\main.c
+	<stdio.h>
+	<stdlib.h>
+

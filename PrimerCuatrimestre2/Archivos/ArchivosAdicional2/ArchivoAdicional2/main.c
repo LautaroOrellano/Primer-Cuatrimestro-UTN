@@ -35,15 +35,19 @@ void cargarRegistroLibrosArchivo(char archivoLibros[]);
 void cargarRegistroUsuariosArchivo(char archivoUsuarios[]);
 void mostrarRegistrosArchivosLibro(char archivoLibros[]);
 void mostrarRegistrosArchivosUsuario(char archivoUsuarios[]);
+void agregarLibro(stLibro newLibro, FILE* arch);
+void agregarUsuario(stUsuario newUsuario, FILE* arch);
+void mostrarUnRegistro(stLibro aux);
+void buscarIdLibros(char archivoLibros[]);
 
 
 int main()
 {
+
     char archivoLibros [] = "libros.bin";
     char archivoUsuarios [] = "usuarios.bin";
     int opcion;
     int salirMenu = 1;
-
 
 
     ///Ejercicio1
@@ -55,6 +59,7 @@ int main()
         printf("2-Cargar usuario \n");
         printf("3-Mostrar libro \n");
         printf("4-Mostrar usuario \n");
+        printf("5-Buscar usuario \n");
         printf("--------------------\n");
         scanf("%d", &opcion);
         while(getchar() != '\n');
@@ -76,6 +81,13 @@ int main()
         case 4:
             mostrarRegistrosArchivosUsuario(archivoUsuarios);
             break;
+
+        case 5:
+            buscarIdLibros(archivoLibros);
+            break;
+
+        default:
+            printf("La opcion no es correcta. \n");
 
         }
 
@@ -174,6 +186,30 @@ void cargarRegistroLibrosArchivo(char archivoLibros[]){
 
 void cargarRegistroUsuariosArchivo(char archivoUsuarios[]){
 
+void agregarLibro( stLibro newLibro, FILE* arch){
+    fwrite(&newLibro, sizeof(stLibro), 1, arch);
+}
+
+void agregarUsuario(stUsuario newUsuario, FILE* arch){
+    fwrite(&newUsuario, sizeof(stUsuario), 1, arch);
+}
+
+void guardarLibroArchivo(char archivoLibro[]){
+
+    FILE *arch = fopen(archivoLibro, "ab");
+    stLibro newLibro;
+
+    if(arch != NULL){
+
+        newLibro = cargarUnLibro();
+        agregarLibro(newLibro, arch);
+        fclose(arch);
+
+    } else {
+        printf("Error al abrir archivo");
+    }
+}
+
 
     FILE *arch = fopen(archivoUsuarios, "ab");
 
@@ -228,5 +264,34 @@ void mostrarRegistrosArchivosUsuario(char archivoUsuarios[]){
     }
 }
 
-//void
+void mostrarUnRegistro(stLibro aux){
+
+    printf("----------------------\n");
+    printf("Titulo: %s\n", aux.titulo);
+    printf("Autor: %s\n", aux.autor);
+    printf("Stock: %d\n", aux.autor);
+    printf("----------------------\n");
+}
+void buscarIdLibros(char archivoLibros[]){
+
+    FILE *arch = fopen(archivoLibros, "rb");
+    stLibro aux;
+    int buscaId;
+
+    if(arch != NULL){
+
+        printf("Id del libro a buscar");
+        scanf("%d", &buscaId);
+        while(fread(&aux, sizeof(stLibro), 1,arch) > 0){
+
+            if(aux.idLibro == buscaId){
+                mostrarUnRegistro(aux);
+
+            }
+        }
+
+    } else {
+        printf("No se pudo abrir el archivo. \n");
+    }
+}
 
