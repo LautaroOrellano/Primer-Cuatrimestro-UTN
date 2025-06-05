@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1749095692 source:c:\users\noxiepc\desktop\carpetas\primercuatrimestre2\simulacroparcial2\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
