@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define CAPACIDAD 7
 
@@ -25,77 +26,73 @@ int contarRegistrosArchivo(char nombreArchivo[], size_t(registro));
 stPasajero* cargarArregloPasajeros(char archivoPasajeros[], int cantRegistroPasajeros);
 stPasajero mostrarPasajero(stPasajero aux);
 void pasajerosPorViaje(stPasajero* arregloPasajeros, int cantRegistroPasajeros, int nViaje);
+stViaje* cargarArregloViajes(char archivoViajes[], int cantRegistroViajes, stPasajero *pasajeros, int cantRegistroPasajeros);
+void listarViajesDisponibles(stViaje *viajes, int cantRegistroViajes, int i);
+void escribirArchivosViajes(char archivoViajes[], stViaje *viajes, int cantRegistroViajes);
+void leerArchivoViajesActualizado(char archivoViajes[]);
 
 
 //--------------------------------------------------------------------------------
 
 int main()
 {
-    int opcion = 1;
-    int opcionMenu = 0;
     char archivoPasajeros[] = "Pasajeros.bin";
     char archivoViajes[] = "Viajes.bin";
     int cantRegistroPasajeros = 0;
     int cantRegistroViajes = 0;
     stPasajero *pasajeros = NULL;
+    stViaje *viajes = NULL;
+    int i = 0;
     int nViaje = 0;
 
+    ///Ejercicio1
+    cantRegistroPasajeros = contarRegistrosArchivo(archivoPasajeros, sizeof(stPasajero));
+    printf("Cantidad de registro Pasajeros: %d \n", cantRegistroPasajeros);
 
+    cantRegistroViajes = contarRegistrosArchivo(archivoViajes, sizeof(stViaje));
+    printf("Cantidad de registro Viajes: %d \n", cantRegistroViajes);
 
-    while(opcion == 1){
+    system("pause");
+    system("cls");
 
-            printf("------------Menu--------------------------\n");
-            printf("1-Cantidad Registros Pasajeros\n");
-            printf("2-Cantidad Registros Viajes\n");
-            printf("3-Mostrar Arreglo Pasajeros\n");
-            printf("4-Buscar total de pasajeros por idViaje\n");
-            printf("------------Menu--------------------------\n\n");
-            printf("Elija una opcion para ingresar al menu: ");
-            scanf("%d", &opcionMenu);
-            while(getchar() != '\n');
+    ///Ejercicio2
+    pasajeros = cargarArregloPasajeros(archivoPasajeros, cantRegistroPasajeros);
 
-        switch(opcionMenu){
+    system("pause");
+    system("cls");
 
-            case 1:
-                    cantRegistroPasajeros = contarRegistrosArchivo(archivoPasajeros, sizeof(stPasajero));
-                    printf("Cantidad de registro Pasajeros: %d \n", cantRegistroPasajeros);
-                    break;
+    ///Ejercicio3
+    printf("Que id de viaje desea buscar?: ");
+    fflush(stdin);
+    scanf("%d", &nViaje);
+    while(getchar() != '\n');
 
-            case 2:
-                    cantRegistroViajes = contarRegistrosArchivo(archivoViajes, sizeof(stViaje));
-                    printf("Cantidad de registro Viajes: %d \n", cantRegistroViajes);
-                    break;
+    pasajerosPorViaje(pasajeros, cantRegistroPasajeros, nViaje);
 
-            case 3:
-                    cantRegistroPasajeros = contarRegistrosArchivo(archivoPasajeros, sizeof(stPasajero));
-                    pasajeros = cargarArregloPasajeros(archivoPasajeros, cantRegistroPasajeros);
+    system("pause");
+    system("cls");
 
-                    for(int i = 0; i < cantRegistroPasajeros; i++){
+    ///Ejercicio4
 
-                        mostrarPasajero(pasajeros[i]);
-                    }
-                    break;
+    printf("Cantidad de viajes totales: \n\n");
+    viajes = cargarArregloViajes(archivoViajes, cantRegistroViajes, pasajeros, cantRegistroPasajeros);
 
-            case 4:
-                    printf("Que id de viaje desea buscar?: ");
-                    fflush(stdin);
-                    scanf("%d", &nViaje);
-                    while(getchar() != '\n');
+    system("pause");
+    system("cls");
 
-                    pasajerosPorViaje(pasajeros, cantRegistroPasajeros, nViaje);
-                    break;
+    ///Ejercicio5
 
-            case 5:
+    listarViajesDisponibles(viajes, cantRegistroViajes, i);
 
-            default:
-                    printf("Opcion incorrecta ingrese nuevamente una opcion.\n");
+    system("pause");
+    system("cls");
 
+    ///Ejercicio6
 
-        }
-        printf("Desea continuar en el menu (1-si | 0-no)\n");
-        scanf("%d", &opcion);
-        while(getchar() != '\n');
-    }
+    printf("Archivo de Viajes actualizado correctamente!! \n\n");
+    escribirArchivosViajes(archivoViajes, viajes, cantRegistroViajes);
+    leerArchivoViajesActualizado(archivoViajes);
+
 
     free(pasajeros);
 
@@ -141,6 +138,11 @@ stPasajero* cargarArregloPasajeros(char archivoPasajeros[], int cantRegistroPasa
 
         fclose(arch);
 
+        for(int i = 0; i < cantRegistroPasajeros; i++){
+
+            mostrarPasajero(arregloPasajeros[i]);
+        }
+
 
     } else {
         printf("El archivo no se pudo abrir. \n");
@@ -149,7 +151,6 @@ stPasajero* cargarArregloPasajeros(char archivoPasajeros[], int cantRegistroPasa
     return arregloPasajeros;
 }
 
-///Ejercicio3
 stPasajero mostrarPasajero(stPasajero aux){
 
     printf("Id: %d \n", aux.idPasajero);
@@ -161,7 +162,17 @@ stPasajero mostrarPasajero(stPasajero aux){
     return aux;
 }
 
-///Ejercicio4
+stViaje mostrarViaje(stViaje aux){
+
+    printf("Id: %d \n", aux.idViaje);
+    printf("Origen: %s \n", aux.origen);
+    printf("Destino: %s \n", aux.destino);
+    printf("Cantidad de pasajeros: %d \n", aux.cantidadPasajeros);
+
+    return aux;
+}
+
+///Ejercicio3
 void pasajerosPorViaje(stPasajero* arregloPasajeros, int cantRegistroPasajeros, int nViaje){
 
     int cont = 0;
@@ -173,6 +184,133 @@ void pasajerosPorViaje(stPasajero* arregloPasajeros, int cantRegistroPasajeros, 
         }
     }
 
-    printf("La cantidad de pasajeros para el viaje %d es de %d", nViaje, cont);
+    printf("La cantidad de pasajeros para el viaje %d es de %d \n\n", nViaje, cont);
+}
 
+///Ejercicio4
+stViaje* cargarArregloViajes(char archivoViajes[], int cantRegistroViajes, stPasajero *pasajeros, int cantRegistroPasajeros){
+
+    FILE *arch = fopen(archivoViajes, "rb");
+    stViaje aux;
+    int i = 0;
+    stViaje* arregloViajes = NULL;
+
+    if(arch != NULL){
+
+        arregloViajes = (stViaje*) malloc(sizeof(stViaje)* cantRegistroViajes);
+        while(fread(&aux, sizeof(stViaje), 1, arch) > 0 && i < cantRegistroViajes){
+
+            arregloViajes[i] = aux;
+            arregloViajes[i].cantidadPasajeros = 0;
+            i++;
+        }
+
+        for(i=0; i<cantRegistroPasajeros; i++){
+            for(int j = 0; j <cantRegistroViajes; j++){
+
+                if(pasajeros[i].idViaje == arregloViajes[j].idViaje){
+                    arregloViajes[j].cantidadPasajeros++;
+                }
+            }
+        }
+        fclose(arch);
+
+        for(i = 0; i < cantRegistroViajes; i++){
+
+            mostrarViaje(arregloViajes[i]);
+        }
+
+    } else {
+        printf("El archivo no se pudo abrir. \n");
+    }
+
+    return arregloViajes;
+
+}
+
+///Ejercicio5
+void listarViajesDisponibles(stViaje *viajes, int cantRegistroViajes, int i){
+
+
+    if( i == cantRegistroViajes){
+
+        return;
+    }
+
+    if(viajes[i].cantidadPasajeros < CAPACIDAD){
+
+        printf("Viajes con lugar disponibles: \n\n ");
+        mostrarViaje(viajes[i]);
+    }
+
+    listarViajesDisponibles(viajes, cantRegistroViajes, i + 1);
+
+}
+
+///Ejercicio6
+void escribirArchivosViajes(char archivoViajes[], stViaje *viajes, int cantRegistroViajes){
+
+    FILE* arch = fopen(archivoViajes, "wb");
+
+
+    if(arch != NULL){
+
+        for(int i=0; i < cantRegistroViajes; i++){
+
+            fwrite(&viajes[i], sizeof(stViaje), 1, arch);
+        }
+
+        fclose(arch);
+
+    } else {
+        printf("El archivo no se pudo leer correctamente. \n");
+    }
+}
+
+void leerArchivoViajesActualizado(char archivoViajes[]){
+
+    FILE* arch = fopen(archivoViajes, "rb");
+    stViaje aux;
+
+    if(arch != NULL){
+
+        while(fread(&aux, sizeof(stViaje), 1, arch) > 0){
+
+           mostrarViaje(aux);
+        }
+
+        fclose(arch);
+
+    } else {
+        printf("El archivo no se pudo leer correctamente. \n");
+    }
+}
+
+///Ejercicio7
+void cargarArchivoPorOrigen(stViaje *viajes, int cantRegistroViajes){
+
+    for(int i=0; i<cantRegistroViajes; i++){
+        char nombreArchivo[30];
+
+        strcpy(nombreArchivo, viajes[i].origen);
+        strcat(nombreArchivo, ".bin");
+        cargarViajeEnArchivo(nombreArchivo, viajes[i]);
+
+    }
+
+}
+
+void cargarViajeEnArchivo(char archivo[], stViaje viaje){
+
+    FILE* arch = fopen(archivo, "ab");
+
+    if(arch != NULL){
+
+        fwrite(&viaje[i], sizeof(stViaje), 1, arch);
+
+        fclose(arch);
+
+    } else {
+        printf("El archivo no se pudo leer correctamente. \n");
+    }
 }
