@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1749255332 source:c:\users\lautaro\desktop\segundoparcial\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1749497934 source:c:\users\lautaro\desktop\segundoparcialpractica\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
