@@ -25,17 +25,16 @@ typedef struct
 
 //---------------------------------PROTOTIPADO-----------------------------------
 void mostrarUnAuto(stAuto aux);
-int dimensionArregloAutos(char archivoAutos[]);
+int dimensionAutoSinPiloto(char archivoAutos[]);
 stAuto* cargarArregloAutos(char archivoAutos[], int dimensionMain);
 void mostrarUnPiloto(stPiloto aux);
 stPiloto* cargarArregloPilotos(char archivoPilotos[], int* validos);
 int menorTiempo0a100(stAuto* autoSinPilotoMain, int dimensionMain);
-stAuto asignarPiloto(stPiloto* pilotoSinAutoMain, int validosMain, stAuto* autoSinPilotoMain, int dimensionMain, int idAutoMenorTiempo);
-void mostrarArregloAuto(stAuto* arreglo, int dimensionMain );
+stAuto asignarPiloto(stPiloto* pilotoSinAutoMain, int validos, stAuto* autoSinPilotoMain, int dimensionMain, int autoMenorTiempo);
 void modificarAutoEnArchivo(char archivoAutos[], stAuto autoModificado);
-void mostrarArchivoAuto(char archivoAutos[]);
+void leerArchivoAuto(char archivoAutos[]);
 float calcularVelocidadPromedio(stAuto* autoSinPilotoMain, int dimensionMain, int sumatoria, int i);
-
+void escribirArchivosPorVelocidad(char archivoSobrePromedio[], char archivoDebajoPromedio[], stAuto* autoSinPilotoMain, int dimensionMain, float promedioVelocidad);
 //-------------------------------------------------------------------------------
 
 
@@ -44,26 +43,16 @@ int main()
     char archivoAutos[] = "autos.bin";
     char archivoPilotos[] = "pilotos.bin";
 
-    printf("-------Archivo auto original----------- \n");
-
-    mostrarArchivoAuto(archivoAutos);
-
-    system("pause");
-    system("cls");
-
     ///Ejercicio1
 
-    int dimensionMain = dimensionArregloAutos(archivoAutos);
+    int dimensionMain = dimensionAutoSinPiloto( archivoAutos);
 
-    printf("La dimension del arreglo autos es de: %d", dimensionMain);
-    printf("\n");
-
-    system("pause");
-    system("cls");
+    printf("La dimension del arreglo autos sin pilotos es: %d \n", dimensionMain);
 
     stAuto* autoSinPilotoMain = cargarArregloAutos(archivoAutos, dimensionMain);
+    printf("Arreglo pilotos sin autos: \n");
 
-    for(int i=0; i < dimensionMain; i++){
+    for(int i=0; i<dimensionMain; i++){
 
         mostrarUnAuto(autoSinPilotoMain[i]);
     }
@@ -72,12 +61,12 @@ int main()
     system("cls");
 
     ///Ejercicio2
+    int validos = 0;
 
-    int validosMain = 0;
+    stPiloto* pilotoSinAutoMain = cargarArregloPilotos(archivoPilotos, &validos);
 
-    stPiloto* pilotoSinAutoMain = cargarArregloPilotos(archivoPilotos, &validosMain);
-
-    for(int i=0; i < dimensionMain; i++){
+    printf("Arreglo pilotos sin autos: \n");
+    for(int i=0; i<dimensionMain; i++){
 
         mostrarUnPiloto(pilotoSinAutoMain[i]);
     }
@@ -87,59 +76,72 @@ int main()
 
     ///Ejercicio3
 
-    int idAutoMenorTiempo = menorTiempo0a100(autoSinPilotoMain, dimensionMain);
+    int autoMenorTiempo = menorTiempo0a100(autoSinPilotoMain, dimensionMain);
 
-    printf("El id del auto con menor tiempo es: %d", idAutoMenorTiempo);
-    printf("\n");
+    printf("El id del auto que hace menor tiempo es: %d \n", autoMenorTiempo);
 
     system("pause");
     system("cls");
 
     ///Ejercicio4
 
-    stAuto autoModificado = asignarPiloto( pilotoSinAutoMain, validosMain, autoSinPilotoMain, dimensionMain, idAutoMenorTiempo);
+    stAuto autoModificado = asignarPiloto(pilotoSinAutoMain, validos, autoSinPilotoMain, dimensionMain, autoMenorTiempo);
 
-    printf("Autos Sin Pilotos modificados: \n\n");
-    mostrarArregloAuto(autoSinPilotoMain, dimensionMain );
+    printf("Vector modificado con el nuevo id de piloto en el auto: \n\n");
+    for(int i=0; i<dimensionMain; i++){
+
+        mostrarUnAuto(autoSinPilotoMain[i]);
+    }
+    printf("Vector modificado asignandole auto al piloto: \n\n");
+    for(int i=0; i<dimensionMain; i++){
+
+        mostrarUnPiloto(pilotoSinAutoMain[i]);
+    }
 
     system("pause");
     system("cls");
 
     ///Ejercicio5
 
-    modificarAutoEnArchivo(archivoAutos, autoModificado);
+    printf("Archivo antes de ser modificado: \n\n");
+    leerArchivoAuto(archivoAutos);
 
-    printf("-------Archivo auto modificado----------- \n");
+    //modificarAutoEnArchivo(archivoAutos, autoModificado);
 
-    mostrarArchivoAuto(archivoAutos);
+    printf("Archivo despues de ser modificado: \n\n");
+    leerArchivoAuto(archivoAutos);
 
     system("pause");
     system("cls");
 
     ///Ejercicio6
-    int i = 0;
+
     int sumatoria = 0;
+    int i = 0;
 
-    float promedioVelocidades = calcularVelocidadPromedio(autoSinPilotoMain, dimensionMain, sumatoria, i);
+    float promedioVelocidad = calcularVelocidadPromedio(autoSinPilotoMain, dimensionMain, sumatoria, i);
 
-    printf("La velocidad promedio es: %.2f", promedioVelocidades);
-    printf("\n");
+    printf("La velocidad promedio de los autos sin pilotos es: %.2f \n", promedioVelocidad);
 
     system("pause");
     system("cls");
 
+    ///Ejercicio7
+
+    char archivoSobrePromedio[] = "sobrePromedio.bin";
+    char archivoDebajoPromedio[] = "debajoPromedio.bin";
+
+    escribirArchivosPorVelocidad(archivoSobrePromedio, archivoDebajoPromedio, autoSinPilotoMain, dimensionMain, promedioVelocidad);
+
+    system("pause");
+    system("cls");
+
+    free(autoSinPilotoMain);
+    free(pilotoSinAutoMain);
 
     return 0;
 }
 
-void mostrarArregloAuto(stAuto* arreglo, int dimensionMain ){
-
-    for(int i=0; i<dimensionMain; i++){
-
-        mostrarUnAuto(arreglo[i]);
-    }
-
-}
 //1. Pasar a un arreglo dinámico de tamaño justo todos los autos sin piloto asignado
 //(idPiloto==-1) y mostrarlo por pantalla. Modularizar el cálculo de la dimensión.
 //Auto* cargarArregloAutos(char nombreArchivo[], int dimension)
@@ -151,12 +153,11 @@ void mostrarUnAuto(stAuto aux){
     printf("EQUIPO: %s \n", aux.equipo);
     printf("VELOCIDAD MAXIMA: %d \n", aux.velocidadMaxima);
     printf("TIEMPO 0 A 100: %lf \n", aux.tiempo0a100);
-    printf("PESO: %2.f \n", aux.peso);
-    printf("--------------------------\n\n");
-
+    printf("PESO: %.2f \n", aux.peso);
+    printf("---------------------------\n\n");
 }
 
-int dimensionArregloAutos(char archivoAutos[]){
+int dimensionAutoSinPiloto(char archivoAutos[]){
 
     FILE* arch = fopen(archivoAutos, "rb");
     stAuto aux;
@@ -164,7 +165,7 @@ int dimensionArregloAutos(char archivoAutos[]){
 
     if(arch != NULL){
 
-        while(fread(&aux, sizeof(stAuto), 1, arch) > 0){
+        while(fread(&aux, sizeof(stAuto), 1, arch) > 0 ){
 
             if(aux.idPiloto == -1){
 
@@ -183,17 +184,17 @@ int dimensionArregloAutos(char archivoAutos[]){
 stAuto* cargarArregloAutos(char archivoAutos[], int dimensionMain){
 
     FILE* arch = fopen(archivoAutos, "rb");
-    stAuto* autosSinPilotos = (stAuto*) malloc (sizeof(stAuto)* dimensionMain);
+    stAuto* autosSinPiloto = (stAuto*) malloc(sizeof(autosSinPiloto)*dimensionMain);
     stAuto aux;
     int i = 0;
 
     if(arch != NULL){
 
-        while(fread(&aux, sizeof(stAuto), 1, arch) > 0){
+        while(fread(&aux, sizeof(stAuto), 1, arch) > 0 ){
 
             if(aux.idPiloto == -1){
 
-                autosSinPilotos[i] = aux;
+                autosSinPiloto[i] = aux;
                 i++;
             }
         }
@@ -203,8 +204,9 @@ stAuto* cargarArregloAutos(char archivoAutos[], int dimensionMain){
         printf("Error \n");
     }
 
-    return autosSinPilotos;
+    return autosSinPiloto;
 }
+
 //2. Pasar a un arreglo dinámico todos los pilotos sin auto asignado y mostrarlo por
 //pantalla. El arreglo debe redimensionarse cuando sea necesario. De no poder
 //resolver el ejercicio usando realloc, se podrá crear un arreglo de tamaño justo, pero
@@ -216,16 +218,15 @@ void mostrarUnPiloto(stPiloto aux){
     printf("ID PILOTO: %d \n", aux.idPiloto);
     printf("APELLIDO: %s \n", aux.apellido);
     printf("EQUIPO: %s \n", aux.equipo);
-    printf("ESTATURA: %2.f \n", aux.estatura);
-    printf("PESO: %2.f \n", aux.peso);
+    printf("ESTATURA 0 A 100: %.2f \n", aux.estatura);
+    printf("PESO: %.2f \n", aux.peso);
     printf("TIENE AUTO: %d \n", aux.tieneAuto);
-    printf("--------------------------\n\n");
-
+    printf("---------------------------\n\n");
 }
 
 stPiloto* cargarArregloPilotos(char archivoPilotos[], int* validos){
 
-    FILE* arch = fopen(archivoPilotos,"rb");
+    FILE* arch = fopen(archivoPilotos, "rb");
     stPiloto* pilotoSinAuto = (stPiloto*) malloc(sizeof(stPiloto));
     stPiloto aux;
 
@@ -240,13 +241,13 @@ stPiloto* cargarArregloPilotos(char archivoPilotos[], int* validos){
                 pilotoSinAuto = (stPiloto*) realloc(pilotoSinAuto, sizeof(stPiloto)*((*validos)+1));
             }
         }
-
         fclose(arch);
     } else {
-        printf("Error \n");
+        printf("ERROR. \n");
     }
 
     return pilotoSinAuto;
+
 }
 //3. Buscar el ID del auto con menor tiempo 0 a 100 en el arreglo y retornarlo.
 //int menorTiempo0a100(Auto* arreglo, int dimension)
@@ -273,35 +274,37 @@ int menorTiempo0a100(stAuto* autoSinPilotoMain, int dimensionMain){
 //Auto asignarPiloto(Piloto* arrPilotos, int dimPilotos, Auto* arrAutos, int dimAutos, int
 //idAutoBuscado)
 
-stAuto asignarPiloto(stPiloto* pilotoSinAutoMain, int validosMain, stAuto* autoSinPilotoMain, int dimensionMain, int idAutoMenorTiempo){
+stAuto asignarPiloto(stPiloto* pilotoSinAutoMain, int validos, stAuto* autoSinPilotoMain, int dimensionMain, int autoMenorTiempo){
 
     int posAuto = 0;
     int posPiloto = 0;
-    int pilotoTieneAuto = -1;
+    int autoEncontrado = 0;
+    int idDelPiloto = 0;
 
-    while( posAuto < dimensionMain && autoSinPilotoMain[posAuto].idAuto != idAutoMenorTiempo){
+    while(posAuto < dimensionMain && autoSinPilotoMain[posAuto].idAuto != autoMenorTiempo){
 
         posAuto++;
     }
 
-    while( posPiloto < validosMain && pilotoTieneAuto == -1 ){
+    while(posPiloto < validos && autoEncontrado == 0){
 
-        if(strcmp(autoSinPilotoMain[posAuto].equipo, pilotoSinAutoMain[posPiloto].equipo) == 0){
+        if(strcmp(pilotoSinAutoMain[posPiloto].equipo, autoSinPilotoMain[posAuto].equipo) == 0){
 
-            pilotoTieneAuto = 1;
+            idDelPiloto = pilotoSinAutoMain[posPiloto].idPiloto;
+            autoEncontrado = 1;
 
         } else {
-
-            posPiloto ++;
+            posPiloto++;
         }
     }
 
-    autoSinPilotoMain[posAuto].idPiloto = pilotoSinAutoMain[posPiloto].idPiloto;
-    pilotoSinAutoMain[posPiloto].tieneAuto = pilotoTieneAuto;
+    autoSinPilotoMain[posAuto].idPiloto = idDelPiloto;
+    pilotoSinAutoMain[posPiloto].tieneAuto = 1;
 
     return autoSinPilotoMain[posAuto];
-
 }
+
+
 //5. Modificar el registro del auto del punto anterior en el archivo.
 //void modificarAutoEnArchivo(char nombreArchivo[], Auto autoModificado)
 
@@ -314,23 +317,22 @@ void modificarAutoEnArchivo(char archivoAutos[], stAuto autoModificado){
 
         while(fread(&aux, sizeof(stAuto), 1, arch) > 0){
 
-            if(aux.idAuto == autoModificado.idAuto){
+            if(autoModificado.idAuto == aux.idAuto){
 
-                fseek(arch, -1 *sizeof(stAuto) , SEEK_CUR);
-
+                fseek(arch, -1*sizeof(stAuto), SEEK_CUR);
                 fwrite(&autoModificado, sizeof(stAuto), 1, arch);
                 break;
+
             }
         }
 
         fclose(arch);
     } else {
-        printf("ERROR. \n");
+        printf("Error al abrir el archivo. \n");
     }
-
 }
 
-void mostrarArchivoAuto(char archivoAutos[]){
+void leerArchivoAuto(char archivoAutos[]){
 
     FILE* arch = fopen(archivoAutos, "rb");
     stAuto aux;
@@ -344,7 +346,7 @@ void mostrarArchivoAuto(char archivoAutos[]){
 
         fclose(arch);
     } else {
-        printf("ERROR. \n");
+        printf("Error al abrir el archivo. \n");
     }
 }
 
@@ -356,9 +358,11 @@ float calcularVelocidadPromedio(stAuto* autoSinPilotoMain, int dimensionMain, in
 
     if(i == dimensionMain){
 
-        return(float)sumatoria/dimensionMain;
+        return (float)sumatoria/dimensionMain;
     } else {
-        return calcularVelocidadPromedio(autoSinPilotoMain, dimensionMain, sumatoria + autoSinPilotoMain[i].velocidadMaxima, i+1);
+
+         return calcularVelocidadPromedio(autoSinPilotoMain, dimensionMain, sumatoria + autoSinPilotoMain[i].velocidadMaxima , i+1);
+
     }
 }
 
@@ -366,6 +370,36 @@ float calcularVelocidadPromedio(stAuto* autoSinPilotoMain, int dimensionMain, in
 //anterior (velocidad mayor al promedio y menor al promedio).
 //void escribirArchivosPorVelocidad(char archivoSobrePromedio[], char
 //archivoDebajoPromedio[], Auto* arreglo, int dimension, float promedio)
+
+void escribirArchivosPorVelocidad(char archivoSobrePromedio[], char archivoDebajoPromedio[], stAuto* autoSinPilotoMain, int dimensionMain, float promedioVelocidad){
+
+    FILE* archSobre = fopen(archivoSobrePromedio, "ab");
+    FILE* archDebajo = fopen(archivoDebajoPromedio, "ab");
+    stAuto aux;
+
+    if(archSobre != NULL && archDebajo != NULL){
+
+        for(int i=0; i<dimensionMain; i++){
+
+           if(autoSinPilotoMain[i].velocidadMaxima < promedioVelocidad){
+
+                aux = autoSinPilotoMain[i];
+                fwrite(&aux, sizeof(stAuto), 1, archDebajo);
+
+           } else {
+
+                aux = autoSinPilotoMain[i];
+                fwrite(&aux, sizeof(stAuto), 1, archSobre);
+           }
+        }
+
+
+       fclose(archSobre);
+       fclose(archDebajo);
+    } else {
+        printf("El archivo no se pudo abrir.");
+    }
+}
 
 //8. Invocar funciones en main() para demostrar el funcionamiento del programa.
 //Crear las variables y constantes que se consideren necesarias
