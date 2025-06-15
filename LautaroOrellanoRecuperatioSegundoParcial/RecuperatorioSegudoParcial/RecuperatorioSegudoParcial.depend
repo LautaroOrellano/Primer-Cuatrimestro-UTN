@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1749860379 source:c:\users\lautaro\desktop\lautaroorellanorecuperatiosegundoparcial\recuperatoriosegudoparcial\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
